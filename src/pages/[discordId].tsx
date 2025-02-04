@@ -27,7 +27,7 @@ export default function Connect() {
           {connected ? (
             <DiscordConnectButton discord_id={query.discordId as string} />
           ) : (
-            <CardanoWallet />
+            <CardanoWallet isDark />
           )}
         </div>
 

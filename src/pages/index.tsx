@@ -20,7 +20,7 @@ export default function Home() {
         <h1 className="text-6xl font-thin mb-20">Delegate to SIDAN Lab</h1>
 
         <div className="mb-20">
-          {connected ? <DelegateButton /> : <CardanoWallet />}
+          {connected ? <DelegateButton /> : <CardanoWallet isDark />}
         </div>
 
         <div className="flex content-center justify-center ">
