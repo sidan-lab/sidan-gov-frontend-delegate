@@ -1,4 +1,5 @@
 import { DiscordConnectButton } from "@/components/DiscordConnectButton";
+import { INSTRUCTION_TEXT, TITLE_TEXT } from "@/lib/text";
 import { CardanoWallet, useWallet } from "@meshsdk/react";
 import { Inter } from "next/font/google";
 import Head from "next/head";
@@ -19,9 +20,7 @@ export default function Connect() {
       <main
         className={`flex min-h-screen flex-col items-center justify-center p-24 ${inter.className} `}
       >
-        <h1 className="text-6xl font-thin mb-20">
-          Delegate to SIDAN Lab & Connect to Discord
-        </h1>
+        <h1 className="text-6xl font-thin mb-20">{TITLE_TEXT}</h1>
 
         <div className="mb-20">
           {connected ? (
@@ -34,11 +33,7 @@ export default function Connect() {
         <div className="flex content-center justify-center ">
           <div className="bg-gray-800 rounded-xl border border-white transition p-5 m-5 w-[80%]">
             <h2 className="text-2xl font-bold mb-2">Instructions</h2>
-            <p className="text-gray-400">
-              Before accessing our discord governance functions, you have to
-              delegate stake and DRep to Sidan first by connecting your wallet
-              and clicking the button above.
-            </p>
+            <p className="text-gray-400">{INSTRUCTION_TEXT}</p>
           </div>
         </div>
       </main>
