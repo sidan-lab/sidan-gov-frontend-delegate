@@ -11,7 +11,7 @@ export const useValidateStaking = () => {
   const [rewardAddress, setRewardAddress] = useState<string | null>(null);
 
   const [error, setError] = useState<boolean>(false);
-  const [transactionLoading, setLoading] = useState(30);
+  const [transactionLoading, setLoading] = useState(120);
 
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
   const [isStaked, setIsStaked] = useState<boolean>(false);
