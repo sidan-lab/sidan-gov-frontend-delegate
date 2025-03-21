@@ -1,4 +1,5 @@
 import { useValidateStaking } from "@/lib/hooks/useValidateStaking";
+import { ERROR_TEXT, SUCCESS_TEXT } from "@/lib/text";
 import { cn } from "@/lib/utils";
 import { useAddress, useWallet } from "@meshsdk/react";
 import axios from "axios";
@@ -67,6 +68,7 @@ export const DiscordConnectButton = ({
       wallet_address: address,
       stake_key_lovelace: lovelace,
     };
+
     try {
       const result = await axios.post(
         `${BACKEND_API_URL}/user/signIn`,
@@ -75,20 +77,14 @@ export const DiscordConnectButton = ({
 
       if (result) {
         setError("");
-        setSuccess(
-          "You have successfully connect your wallet to SIDAN Lab. You may now continue the authentication process in Discord."
-        );
+        setSuccess(SUCCESS_TEXT.API);
       } else {
-        setError(
-          "An error occurred while connecting your wallet to SIDAN Lab. Please try again"
-        );
+        setError(ERROR_TEXT.API);
         setSuccess("");
       }
     } catch (error) {
       console.log(error);
-      setError(
-        "An error occurred while connecting your wallet to SIDAN Lab. Please try again"
-      );
+      setError(ERROR_TEXT.API);
       setSuccess("");
     }
   };
@@ -135,13 +131,7 @@ export const DiscordConnectButton = ({
 
           {error && <p className="text-danger">{error}</p>}
 
-          {walletError && (
-            <p className="text-danger">
-              An error occurred connecting wallet. Your wallet is either not
-              connected, not supported, or not in the same network as the SIDAN
-              Lab. Please try again.
-            </p>
-          )}
+          {walletError && <p className="text-danger">{ERROR_TEXT.WALLET}</p>}
         </div>
       )}
     </>
