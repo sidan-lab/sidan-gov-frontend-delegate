@@ -1,4 +1,5 @@
 import { useValidateStaking } from "@/lib/hooks/useValidateStaking";
+import { DELEGATE_TEXT, ERROR_TEXT } from "@/lib/text";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -38,23 +39,16 @@ export const DelegateButton = () => {
           }
         )}
       >
-        {walletError ? "Wallet Error" : "Delegate to Sidan"}
+        {walletError ? "Wallet Error" : DELEGATE_TEXT}
       </button>
 
       {error && (
         <p className="text-danger">
-          An error occurred while delegating stake and DRep to SIDAN Lab. Please
-          try again
+          An error occurred while delegating to SIDAN Lab. Please try again
         </p>
       )}
 
-      {walletError && (
-        <p className="text-danger">
-          An error occurred connecting wallet. Your wallet is either not
-          connected, not supported, or not in the same network as the SIDAN Lab.
-          Please try again.
-        </p>
-      )}
+      {walletError && <p className="text-danger">{ERROR_TEXT.WALLET}</p>}
     </div>
   );
 };

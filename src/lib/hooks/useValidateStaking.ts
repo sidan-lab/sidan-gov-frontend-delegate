@@ -3,8 +3,8 @@ import { useWallet } from "@meshsdk/react";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { DelegateTransactionActions } from "../cardano/stakeToSidan";
-import { set } from "lodash";
 
+// Custom hook used to validate staking status of user. Used in other projects as well.
 export const useValidateStaking = () => {
   const walletInfo = useWallet();
 
