@@ -1,4 +1,5 @@
 import { DelegateButton } from "@/components/DelegateButton";
+import { useValidateStaking } from "@/lib/hooks/useValidateStaking";
 import { CardanoWallet, useWallet } from "@meshsdk/react";
 import { Inter } from "next/font/google";
 import Head from "next/head";
@@ -7,6 +8,12 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const { connected } = useWallet();
+
+  const { delegateToSidan } = useValidateStaking();
+
+  const onDelegate = async () => {
+    await delegateToSidan();
+  };
 
   return (
     <div className="bg-gray-900 w-full text-white text-center">
@@ -20,7 +27,11 @@ export default function Home() {
         <h1 className="text-6xl font-thin mb-20">Delegate to SIDAN Lab</h1>
 
         <div className="mb-20">
-          {connected ? <DelegateButton /> : <CardanoWallet isDark />}
+          {connected ? (
+            <DelegateButton onDelegate={() => onDelegate()} />
+          ) : (
+            <CardanoWallet isDark />
+          )}
         </div>
 
         <div className="flex content-center justify-center ">
