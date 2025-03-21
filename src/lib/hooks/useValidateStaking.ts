@@ -12,6 +12,7 @@ export const useValidateStaking = () => {
   const [rewardAddress, setRewardAddress] = useState<string | null>(null);
 
   const [error, setError] = useState<boolean>(false);
+  const [transactionLoading, setLoading] = useState(0);
 
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
   const [isStaked, setIsStaked] = useState<boolean>(false);
@@ -22,6 +23,23 @@ export const useValidateStaking = () => {
     setIsStaked(false);
     setIsRegistered(false);
   };
+
+  const updateStateForConnect = () => {
+    setIsDRepDelegated(true);
+    setIsStaked(true);
+    setIsRegistered(true);
+    setLoading(120);
+  };
+
+  useEffect(() => {
+    if (transactionLoading > 0) {
+      const countdownInterval = setInterval(() => {
+        setLoading((prev) => prev - 1);
+      }, 1000);
+
+      return () => clearInterval(countdownInterval);
+    }
+  }, [transactionLoading, setLoading]);
 
   const checkAddressInfo = async (stakeAddress: string) => {
     if (!stakeAddress) {
@@ -61,7 +79,6 @@ export const useValidateStaking = () => {
       setError(true);
       return;
     }
-
     try {
       const utxos = await wallet.getUtxos();
       const changeAddress = await wallet.getChangeAddress();
@@ -75,7 +92,6 @@ export const useValidateStaking = () => {
       if (!isDRepDelegated) {
         actions.push("voteDelegation");
       }
-
       const response = await axios.post("/api/stakeToSidan", {
         rewardAddress,
         utxos,
@@ -83,14 +99,13 @@ export const useValidateStaking = () => {
         actions,
       });
       const { unsignedTx } = response.data.data;
-
       if (unsignedTx) {
         const signedTx = await wallet.signTx(unsignedTx);
         const txHash = await wallet.submitTx(signedTx);
 
         if (txHash) {
-          setIsStaked(true);
-          setIsDRepDelegated(true);
+          console.log("Submitted transaction with hash:" + txHash);
+          updateStateForConnect();
         }
       }
     } catch (error) {
@@ -122,5 +137,8 @@ export const useValidateStaking = () => {
     isStaked,
     isDRepDelegated,
     isRegistered,
+    updateStateForConnect,
+    transactionLoading,
+    setLoading,
   };
 };

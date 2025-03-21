@@ -3,12 +3,15 @@ import { DELEGATE_TEXT, ERROR_TEXT } from "@/lib/text";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
-export const DelegateButton = () => {
+export interface DelegateButtonProps {
+  onDelegate: () => Promise<void>;
+}
+
+export const DelegateButton = ({ onDelegate }: DelegateButtonProps) => {
   const [error, setError] = useState(false);
   const {
     isDRepDelegated,
     isStaked,
-    delegateToSidan,
     error: walletError,
   } = useValidateStaking();
 
@@ -19,7 +22,7 @@ export const DelegateButton = () => {
 
     if (!isStaked || !isDRepDelegated) {
       try {
-        await delegateToSidan();
+        await onDelegate();
       } catch (error) {
         console.log("Error: ", error);
         setError(true);
