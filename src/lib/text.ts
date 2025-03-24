@@ -10,9 +10,10 @@ export const CONNECT_TEXT = "Connect to Discord";
 export const CONTINUE_TEXT = "Continue in Discord";
 
 export enum ERROR_TEXT {
-  API = "An error occurred while connecting your wallet to SIDAN Lab. Please try again",
-  WALLET = "An error occurred connecting wallet. Your wallet is either not connected, not supported, or not in the mainnet. Please try again.",
-  SIGN = "An error occurred while delegating to SIDAN Lab. Please try again",
+  API = "An error occurred while connecting your wallet to SIDAN Lab. Please refresh & try again",
+  WALLET_CONNECT = "An error occurred connecting wallet. Your wallet is either not connected, not supported, or not in the mainnet. Please try again.",
+  WALLET_SIGN = "An error occurred while delegating to SIDAN Lab. Please refresh & try again",
+  REDIRECT = "An error occurred while redirecting you to SIDAN Lab Discord Server. Please try again or proceed to Discord manually.",
 }
 
 export enum SUCCESS_TEXT {
