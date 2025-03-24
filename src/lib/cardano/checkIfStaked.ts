@@ -10,6 +10,15 @@ const blockchainProvider = new BlockfrostProvider(blockfrostApiKey);
 export const checkIfStaked = async (stakeAddress: string) => {
   const info = await blockchainProvider.get(`/accounts/${stakeAddress}`);
   const { active, pool_id, drep_id } = info;
+
+  if (!active) {
+    return {
+      isRegistered: active,
+      isStaked: false,
+      isDRepDelegated: false,
+    };
+  }
+
   return {
     isRegistered: active,
     isStaked: pool_id === sidanPoolId,
