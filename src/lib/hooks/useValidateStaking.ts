@@ -11,7 +11,7 @@ export const useValidateStaking = () => {
   const [wallet, setBrowserWallet] = useState<BrowserWallet | null>(null);
   const [rewardAddress, setRewardAddress] = useState<string | null>(null);
 
-  const [error, setError] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
   const [transactionLoading, setLoading] = useState(0);
 
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
@@ -43,7 +43,7 @@ export const useValidateStaking = () => {
 
   const checkAddressInfo = async (stakeAddress: string) => {
     if (!stakeAddress) {
-      setError(true);
+      setError("wallet_connect");
       return;
     }
 
@@ -66,17 +66,17 @@ export const useValidateStaking = () => {
     } catch (error) {
       console.log("Error: ", error);
       resetState();
-      setError(true);
+      setError("wallet_connect");
     }
   };
 
   const delegateToSidan = useCallback(async () => {
     if (!rewardAddress) {
-      setError(true);
+      setError("wallet_connect");
       return;
     }
     if (!wallet) {
-      setError(true);
+      setError("wallet_connect");
       return;
     }
     try {
@@ -109,13 +109,14 @@ export const useValidateStaking = () => {
         }
       }
     } catch (error) {
+      setError("wallet_sign");
       console.log("Error: ", error);
       resetState();
     }
   }, [rewardAddress, wallet, isRegistered, isStaked, isDRepDelegated]);
 
   useEffect(() => {
-    setError(false);
+    setError("");
     if (walletInfo.name) {
       BrowserWallet.enable(walletInfo.name).then((wallet) => {
         setBrowserWallet(wallet);

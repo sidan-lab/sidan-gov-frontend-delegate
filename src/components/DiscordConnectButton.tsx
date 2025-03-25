@@ -1,10 +1,9 @@
 import { useValidateStaking } from "@/lib/hooks/useValidateStaking";
-import { ERROR_TEXT, SUCCESS_TEXT } from "@/lib/text";
+import { DELEGATE_TEXT, ERROR_TEXT, SUCCESS_TEXT } from "@/lib/text";
 import { cn } from "@/lib/utils";
 import { useAddress, useWallet } from "@meshsdk/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { DelegateButton } from "./DelegateButton";
 import { Loading } from "./Loading";
 
 const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL!;
@@ -42,15 +41,17 @@ export const DiscordConnectButton = ({
   }, [wallet]);
 
   const onDelegate = async () => {
+    if (walletError) {
+      return;
+    }
+
     await delegateToSidan();
   };
 
   const onClick = async () => {
     if (success) {
       if (!DELEGATE_CHANNEL_LINK) {
-        setError(
-          "An error occurred while redirecting you to SIDAN Lab Discord Server. Please try again or proceed to Discord manually."
-        );
+        setError(ERROR_TEXT.REDIRECT);
       }
 
       return window.open(DELEGATE_CHANNEL_LINK, "_blank");
@@ -90,7 +91,7 @@ export const DiscordConnectButton = ({
   };
 
   return (
-    <>
+    <div className="flex flex-col items-center gap-4">
       {loading > 0 && (
         <div className="flex justify-center flex-col items-center w-full p-4">
           <Loading />
@@ -110,7 +111,20 @@ export const DiscordConnectButton = ({
       )}
 
       {!isStaked || !isDRepDelegated ? (
-        <DelegateButton onDelegate={() => onDelegate()} />
+        <div className="flex flex-col items-center gap-4">
+          <button
+            onClick={onDelegate}
+            className={cn(
+              "btn z-10 h-full whitespace-nowrap bg-gray-800 rounded-xl border border-white transition px-8 py-4",
+              {
+                "cursor-not-allowed": walletError,
+                "cursor-pointer hover:scale-105": !walletError,
+              }
+            )}
+          >
+            {walletError ? "Wallet Error" : DELEGATE_TEXT}
+          </button>
+        </div>
       ) : (
         <div className="flex flex-col items-center gap-4">
           <button
@@ -126,14 +140,20 @@ export const DiscordConnectButton = ({
           >
             {success ? "Continue in Discord" : "Connect to Discord"}
           </button>
-
-          {success && <p className="text-success">{success}</p>}
-
-          {error && <p className="text-danger">{error}</p>}
-
-          {walletError && <p className="text-danger">{ERROR_TEXT.WALLET}</p>}
         </div>
       )}
-    </>
+
+      {success && <p className="text-success">{success}</p>}
+
+      {error && <p className="text-danger">{error}</p>}
+
+      {walletError && (
+        <p className="text-danger">
+          {walletError === "wallet_sign"
+            ? ERROR_TEXT.WALLET_SIGN
+            : ERROR_TEXT.WALLET_CONNECT}
+        </p>
+      )}
+    </div>
   );
 };
