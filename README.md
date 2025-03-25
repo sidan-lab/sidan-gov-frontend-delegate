@@ -26,4 +26,4 @@ yarn dev # or npm run dev
 
 ### Deployment
 
-We are using Vercel for deployment. The deployment is done automatically when a PR is merged into the `develop` branch.
+We are using Vercel for deployment. The deployment is done automatically when a PR is merged into the `staging` branch.
