@@ -3,7 +3,7 @@ import { BlockfrostProvider } from "@meshsdk/core";
 const blockfrostApiKey = process.env.BLOCKFROST_KEY!;
 
 const sidanPoolId = process.env.NEXT_PUBLIC_SIDAN_POOL_ID!;
-const sidanDRepId = process.env.NEXT_PUBLIC_SIDAN_DREP_ID!;
+const sidanDRepId = process.env.NEXT_PUBLIC_SIDAN_DREP_ID_129!;
 
 const blockchainProvider = new BlockfrostProvider(blockfrostApiKey);
 
