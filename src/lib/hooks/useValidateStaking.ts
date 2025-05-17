@@ -3,15 +3,16 @@ import { useWallet } from "@meshsdk/react";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { DelegateTransactionActions } from "../cardano/stakeToSidan";
-import { set } from "lodash";
 
+// Custom hook used to validate staking status of user. Used in other projects as well.
 export const useValidateStaking = () => {
   const walletInfo = useWallet();
 
   const [wallet, setBrowserWallet] = useState<BrowserWallet | null>(null);
   const [rewardAddress, setRewardAddress] = useState<string | null>(null);
 
-  const [error, setError] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [transactionLoading, setLoading] = useState(0);
 
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
   const [isStaked, setIsStaked] = useState<boolean>(false);
@@ -23,9 +24,26 @@ export const useValidateStaking = () => {
     setIsRegistered(false);
   };
 
+  const updateStateForConnect = () => {
+    setIsDRepDelegated(true);
+    setIsStaked(true);
+    setIsRegistered(true);
+    setLoading(120);
+  };
+
+  useEffect(() => {
+    if (transactionLoading > 0) {
+      const countdownInterval = setInterval(() => {
+        setLoading((prev) => prev - 1);
+      }, 1000);
+
+      return () => clearInterval(countdownInterval);
+    }
+  }, [transactionLoading, setLoading]);
+
   const checkAddressInfo = async (stakeAddress: string) => {
     if (!stakeAddress) {
-      setError(true);
+      setError("wallet_connect");
       return;
     }
 
@@ -48,20 +66,19 @@ export const useValidateStaking = () => {
     } catch (error) {
       console.log("Error: ", error);
       resetState();
-      setError(true);
+      setError("wallet_connect");
     }
   };
 
   const delegateToSidan = useCallback(async () => {
     if (!rewardAddress) {
-      setError(true);
+      setError("wallet_connect");
       return;
     }
     if (!wallet) {
-      setError(true);
+      setError("wallet_connect");
       return;
     }
-
     try {
       const utxos = await wallet.getUtxos();
       const changeAddress = await wallet.getChangeAddress();
@@ -75,7 +92,6 @@ export const useValidateStaking = () => {
       if (!isDRepDelegated) {
         actions.push("voteDelegation");
       }
-
       const response = await axios.post("/api/stakeToSidan", {
         rewardAddress,
         utxos,
@@ -83,24 +99,24 @@ export const useValidateStaking = () => {
         actions,
       });
       const { unsignedTx } = response.data.data;
-
       if (unsignedTx) {
         const signedTx = await wallet.signTx(unsignedTx);
         const txHash = await wallet.submitTx(signedTx);
 
         if (txHash) {
-          setIsStaked(true);
-          setIsDRepDelegated(true);
+          console.log("Submitted transaction with hash:" + txHash);
+          updateStateForConnect();
         }
       }
     } catch (error) {
+      setError("wallet_sign");
       console.log("Error: ", error);
       resetState();
     }
   }, [rewardAddress, wallet, isRegistered, isStaked, isDRepDelegated]);
 
   useEffect(() => {
-    setError(false);
+    setError("");
     if (walletInfo.name) {
       BrowserWallet.enable(walletInfo.name).then((wallet) => {
         setBrowserWallet(wallet);
@@ -122,5 +138,8 @@ export const useValidateStaking = () => {
     isStaked,
     isDRepDelegated,
     isRegistered,
+    updateStateForConnect,
+    transactionLoading,
+    setLoading,
   };
 };
