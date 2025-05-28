@@ -36,9 +36,9 @@ export const stakeToSidan = async ({
   let unsignedTx = "";
 
   if (rewardAddress !== "") {
-    // const assetMap = new Map<Unit, Quantity>();
-    // assetMap.set("lovelace", "5000000");
-    // const selectedUtxos = keepRelevant(assetMap, utxos);
+    const assetMap = new Map<Unit, Quantity>();
+    assetMap.set("lovelace", "5000000");
+    const selectedUtxos = keepRelevant(assetMap, utxos);
 
     const txBuilder = new MeshTxBuilder({
       fetcher: blockchainProvider,
@@ -65,7 +65,7 @@ export const stakeToSidan = async ({
       }
     }
 
-    txBuilder.selectUtxosFrom(utxos);
+    txBuilder.selectUtxosFrom(selectedUtxos);
     txBuilder.changeAddress(changeAddress);
     try {
       unsignedTx = await txBuilder.complete();
